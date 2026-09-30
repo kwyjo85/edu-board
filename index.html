@@ -1,171 +1,135 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>코딩 교육 참고 보드</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>코딩하루 보드</title>
 <style>
-  :root { --bg:#0f1115; --card:#181b22; --line:#262a33; --text:#e6e8ee; --muted:#8b91a1; --accent:#7c9cff; --green:#3ec38b; --amber:#f5b041; --red:#f06a6a; }
+  :root { --bg:#fbfaf8; --card:#ffffff; --line:#ece6dc; --text:#2a2622; --muted:#8a8278; --accent:#7a4fd6; --accent-soft:#f4efff; --red:#d9534f; --green:#1f8a3b; --amber:#a26400; }
   * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",sans-serif; background:var(--bg); color:var(--text); }
-  header { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-  header h1 { margin:0; font-size:20px; }
-  header .meta { color:var(--muted); font-size:13px; }
-  main { display:grid; grid-template-columns: 1fr 320px; gap:20px; padding:20px 28px; }
-  @media (max-width: 1000px) { main { grid-template-columns:1fr; padding:14px; } header { padding:14px; } }
-  section.panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
-  h2 { font-size:14px; margin:0 0 12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
-  .chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .chip { padding:4px 10px; border-radius:999px; background:#222634; font-size:12px; color:var(--text); border:1px solid transparent; cursor:pointer; }
-  .chip small { color:var(--muted); margin-left:4px; }
-  .filters { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
-  select, input[type=search], button { background:#222634; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; }
-  input[type=search] { flex:1; min-width:180px; }
-  button.primary { background:var(--accent); color:#0b0d12; border:none; font-weight:600; cursor:pointer; }
-  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:12px; }
-  .card { background:#1c2029; border:1px solid var(--line); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px; }
-  .card.dim { opacity:.5; filter:saturate(.4); }
-  .card.dim:hover { opacity:.9; filter:none; }
-  .card .top { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); align-items:center; gap:8px; }
-  .card .acct { color:var(--accent); font-weight:600; }
-  .card .idea { font-size:14px; line-height:1.45; font-weight:600; }
-  .card .summary { font-size:12px; color:var(--muted); line-height:1.45; }
-  .card .caption { font-size:12px; color:var(--muted); max-height:0; overflow:hidden; transition:max-height .2s; white-space:pre-wrap; }
-  .card.open .caption { max-height:400px; overflow:auto; }
-  .card .tags { display:flex; gap:4px; flex-wrap:wrap; }
-  .tag { font-size:11px; padding:2px 7px; border-radius:6px; background:#262b38; color:#c9cfdd; }
-  .tag.tool { background:#2a3352; color:#a9bbff; }
-  .tag.type { background:#2b3a31; color:#8fe0b6; }
-  .tag.topic { background:#3a2e4a; color:#d9b8ff; font-weight:600; }
-  .card .stats { font-size:12px; color:var(--muted); display:flex; gap:10px; align-items:center; }
-  .scorebox { display:flex; align-items:center; gap:8px; }
-  .bigscore { font-size:22px; font-weight:800; }
-  .bigscore.실용 { color:var(--green); } .bigscore.흥미 { color:var(--amber); } .bigscore.비현실 { color:var(--red); }
-  .verdict { font-size:11px; padding:2px 8px; border-radius:999px; font-weight:700; }
-  .verdict.실용 { background:#1f3a2e; color:var(--green); } .verdict.흥미 { background:#3a3320; color:var(--amber); } .verdict.비현실 { background:#3a2323; color:var(--red); }
-  .subscores { display:flex; gap:6px; flex-wrap:wrap; font-size:11px; color:var(--muted); }
-  .subscores span b { color:var(--text); }
-  .why { font-size:12px; line-height:1.5; color:#c9cfdd; background:#141720; border-left:3px solid var(--accent); padding:8px 10px; border-radius:6px; }
-  .gate { font-size:11px; color:var(--green); }
-  .promo { font-size:12px; line-height:1.5; background:#2a2233; border-left:3px solid #d9b8ff; padding:8px 10px; border-radius:6px; color:#eadcff; }
-  .promo b { color:#d9b8ff; }
-  .promo .hook { font-size:13px; font-weight:700; color:#fff; margin:4px 0; }
-  .fact { font-size:11px; color:var(--amber); }
-  .essay { font-size:12px; line-height:1.5; background:#1f2b33; border-left:3px solid #6fd3ff; padding:8px 10px; border-radius:6px; color:#d6f1ff; }
-  .essay b { color:#6fd3ff; }
-  details.guide summary { font-size:12px; color:var(--accent); cursor:pointer; font-weight:600; }
-  .guide ol { font-size:12px; color:#dfe3ec; padding-left:18px; margin:6px 0 0; line-height:1.55; }
-  .card .actions { display:flex; gap:6px; align-items:center; margin-top:4px; }
-  .card textarea { width:100%; background:#141720; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px; font-size:12px; min-height:52px; resize:vertical; }
-  .status { font-size:11px; padding:2px 8px; border-radius:999px; font-weight:600; }
-  .status.보류 { background:#2a2e3a; color:var(--muted); } .status.시도중 { background:#3a3320; color:var(--amber); } .status.적용완료 { background:#1f3a2e; color:var(--green); }
-  ul.queue { padding:0; margin:0; }
-  .queue li { list-style:none; padding:8px 0; border-bottom:1px solid var(--line); font-size:13px; }
-  .queue li:last-child { border-bottom:none; }
-  .queue a { color:var(--accent); text-decoration:none; }
-  .bars { display:flex; flex-direction:column; gap:6px; }
-  .bar { display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:12px; }
-  .bar .track { height:8px; background:#222634; border-radius:4px; overflow:hidden; }
-  .bar .fill { height:100%; background:var(--accent); }
-  .empty { text-align:center; padding:60px 20px; color:var(--muted); line-height:1.7; }
-  .empty code { background:#222634; padding:2px 6px; border-radius:4px; }
-  .top3 li { list-style:none; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
-  .top3 li:last-child { border-bottom:none; }
-  .top3 .t { font-weight:600; }
-  .top3 .s { color:var(--muted); font-size:12px; margin-top:3px; }
-  .top3 .s b { color:var(--green); }
-  details.lowzone { margin-top:16px; }
-  details.lowzone summary { color:var(--muted); font-size:13px; cursor:pointer; padding:8px 0; }
-  .dist { display:flex; gap:8px; }
-  .dist div { flex:1; text-align:center; padding:10px 6px; border-radius:10px; background:#141720; }
-  .dist .n { font-size:20px; font-weight:800; }
-  .dist .l { font-size:11px; color:var(--muted); }
-  .mkt { font-size:12px; line-height:1.55; background:#171c26; border:1px solid var(--line); padding:8px 10px; border-radius:8px; color:#dfe3ec; }
-  .mkt b { color:#ffd27a; }
-  .mkt ul { margin:4px 0 6px; padding-left:18px; }
-  .mkt .row { margin-top:3px; }
-  .mkt .trig span { display:inline-block; font-size:11px; background:#3a3320; color:var(--amber); border-radius:6px; padding:1px 6px; margin:2px 3px 0 0; }
-  details.mktd summary { font-size:12px; color:#ffd27a; cursor:pointer; font-weight:600; }
-  .pack { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap:12px; }
-  .pitem { background:#1c2029; border:1px solid var(--line); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px; }
-  .pitem.done { opacity:.55; }
-  .pitem .ch { font-size:11px; font-weight:700; color:#0b0d12; background:#d9b8ff; border-radius:999px; padding:2px 8px; align-self:flex-start; }
-  .pitem .pt { font-size:14px; font-weight:700; }
-  .pitem pre { white-space:pre-wrap; font-family:inherit; font-size:13px; line-height:1.6; background:#141720; border-radius:8px; padding:10px; margin:0; color:#eef0f5; }
-  .pitem .pw { font-size:12px; color:var(--muted); line-height:1.5; }
-  .pitem .pa { display:flex; gap:6px; }
-  .report li { font-size:13px; line-height:1.6; margin-bottom:6px; }
-  .report b { color:#ffd27a; }
+  html, body { margin:0; background:#eceae6; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",sans-serif; color:var(--text); -webkit-text-size-adjust:100%; }
+  .app { max-width:560px; margin:0 auto; min-height:100vh; background:var(--bg); position:relative; padding-bottom:84px; }
+  .view { display:none; padding:14px 16px 20px; }
+  .view.on { display:block; }
+  .hello { font-size:13px; color:var(--muted); margin:6px 0 2px; }
+  .big { font-size:22px; font-weight:800; margin:0 0 10px; line-height:1.35; }
+  .intro { font-size:13px; color:var(--muted); line-height:1.6; margin:0 0 12px; }
+  .prog { height:8px; background:#ece6f7; border-radius:4px; overflow:hidden; margin:2px 0 14px; }
+  .prog b { display:block; height:100%; background:var(--accent); transition:width .3s; }
+  .day { font-size:12px; font-weight:700; color:var(--muted); margin:16px 0 6px; }
+  .task { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:8px; display:flex; gap:12px; align-items:flex-start; cursor:pointer; }
+  .task .ck { width:24px; height:24px; border-radius:8px; border:2px solid #cfc6ba; flex:none; margin-top:1px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+  .task.done .ck { background:var(--accent); border-color:var(--accent); }
+  .task.done .tt { text-decoration:line-through; color:#aaa; }
+  .tt { font-size:15px; font-weight:700; line-height:1.4; }
+  .tm { font-size:12px; color:var(--muted); margin-top:3px; }
+  .tm.need { color:#c2410c; font-weight:700; }
+  .chip { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; margin-right:4px; }
+  .c-스레드 { background:#111; color:#fff; } .c-인스타 { background:#fde4ef; color:#c2185b; } .c-네이버 { background:#e3f6e8; color:var(--green); } .c-이번 { background:#fff1d6; color:var(--amber); }
+  .tabbar { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px; height:68px; background:#fff; border-top:1px solid var(--line); display:flex; justify-content:space-around; align-items:center; padding-bottom:env(safe-area-inset-bottom); z-index:10; }
+  .tabbar button { background:none; border:none; font-size:12px; color:#999; display:flex; flex-direction:column; align-items:center; gap:3px; font-family:inherit; }
+  .tabbar button i { font-style:normal; font-size:20px; }
+  .tabbar button.on { color:var(--accent); font-weight:700; }
+  /* detail */
+  .sheet { position:fixed; inset:0; background:var(--bg); z-index:20; overflow:auto; display:none; }
+  .sheet.on { display:block; }
+  .sheet .inner { max-width:560px; margin:0 auto; padding:14px 16px 110px; }
+  .back { font-size:14px; color:var(--accent); background:none; border:none; padding:6px 0; font-family:inherit; }
+  .tip { background:var(--accent-soft); border-radius:12px; padding:10px 12px; font-size:13px; color:#4b2f9e; line-height:1.55; margin:10px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; }
+  .draft { font-size:15px; line-height:1.75; white-space:pre-wrap; word-break:keep-all; }
+  .fill { display:block; width:100%; background:#fff7e6; border:1.5px dashed #f0b44c; border-radius:10px; padding:9px 10px; margin:6px 0; font-size:14px; line-height:1.5; color:#5a3b00; font-family:inherit; resize:vertical; min-height:44px; }
+  .fill.ok { background:#eef9f0; border:1.5px solid #6cc07f; color:#1f4b2b; }
+  .fill::placeholder { color:#b98a3a; }
+  .opt { font-size:11px; color:var(--muted); margin-top:-2px; }
+  .count { font-size:12px; color:var(--muted); margin-top:8px; text-align:right; }
+  .count.over { color:var(--red); font-weight:700; }
+  .actions { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px; background:#fff; border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); display:flex; gap:8px; z-index:21; }
+  .btn { flex:1; text-align:center; padding:13px 0; border-radius:12px; font-size:15px; font-weight:700; border:none; font-family:inherit; }
+  .btn.p { background:var(--accent); color:#fff; } .btn.s { background:#f1ede7; color:#4a443d; }
+  .refs summary { font-size:13px; color:var(--accent); cursor:pointer; margin:8px 0; }
+  /* learn */
+  .sec { font-size:16px; font-weight:800; margin:20px 0 8px; }
+  .stat { display:flex; gap:8px; margin:6px 0 4px; }
+  .stat div { flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:9px 6px; text-align:center; font-size:11px; color:var(--muted); }
+  .stat b { display:block; font-size:17px; color:var(--text); }
+  .rep li { font-size:13px; line-height:1.6; margin-bottom:6px; }
+  .rep b { color:#5b3fb0; }
+  .tech { background:#fff; border:1px solid var(--line); border-radius:16px; padding:13px 14px; margin-bottom:10px; }
+  .tech h4 { margin:0 0 4px; font-size:15px; }
+  .tech .ex { font-size:13px; color:#5f584f; line-height:1.6; }
+  .tech .ours { margin-top:8px; background:var(--accent-soft); border-radius:10px; padding:9px 11px; font-size:14px; color:#3f2a8a; line-height:1.55; }
+  .tech .use { font-size:12px; color:var(--muted); margin-top:6px; }
+  .tech.dont { border-color:#f3d4d2; }
+  .tech.dont h4 { color:var(--red); }
+  .ref { border-top:1px solid var(--line); padding:10px 0 4px; margin-top:8px; font-size:13px; line-height:1.55; }
+  .ref .who { font-size:12px; color:var(--muted); }
+  .ref ul { margin:4px 0; padding-left:18px; }
+  .ref .k { color:#a26400; font-weight:700; }
+  .search { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:12px; font-size:14px; font-family:inherit; background:#fff; margin-bottom:8px; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .chips button { border:1px solid var(--line); background:#fff; border-radius:999px; padding:5px 10px; font-size:12px; font-family:inherit; color:#5f584f; }
+  .chips button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .post { background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 13px; margin-bottom:8px; }
+  .post .h { font-size:14px; font-weight:700; line-height:1.45; }
+  .post .who { font-size:12px; color:var(--muted); margin-top:2px; }
+  .post details summary { font-size:12px; color:var(--accent); margin-top:6px; cursor:pointer; }
+  .post .body { font-size:13px; line-height:1.6; margin-top:6px; }
+  .post .body ul { margin:4px 0; padding-left:18px; }
+  .post .body .k { color:#a26400; font-weight:700; }
+  .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#2a2622; color:#fff; padding:10px 16px; border-radius:999px; font-size:13px; opacity:0; transition:opacity .2s; z-index:30; pointer-events:none; }
+  .toast.on { opacity:1; }
+  .empty { color:var(--muted); font-size:13px; text-align:center; padding:30px 0; }
+  .upd { font-size:11px; color:#a39a8f; text-align:center; margin-top:18px; }
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>코딩 교육 참고 보드</h1>
-    <div class="meta" id="meta"></div>
-  </div>
-  <div style="display:flex; gap:8px;">
-    <button id="exportNotes">내 메모 내보내기</button>
-    <button id="importNotes">메모 불러오기</button>
-    <input type="file" id="importFile" accept="application/json" style="display:none">
-  </div>
-</header>
-<main>
-  <div style="grid-column:1/-1" id="topPanels">
-    <section class="panel" id="packPanel" style="display:none"><h2 id="packTitle">이번 주 콘텐츠 팩</h2><div class="pw" id="packIntro" style="font-size:13px;color:var(--muted);margin-bottom:10px"></div><div class="pack" id="pack"></div></section>
-    <section class="panel report" id="reportPanel" style="display:none"><h2 id="reportTitle">트렌드 리포트</h2><div id="report"></div></section>
-  </div>
-  <div>
-    <section class="panel">
-      <h2>판정 분포 · 트렌드 키워드</h2>
-      <div class="dist" id="dist"></div>
-      <div class="chips" id="trendChips" style="margin-top:12px"></div>
-    </section>
-    <section class="panel">
-      <h2>참고 글 · 학부모 관심사 / 에세이 소재 / 학원 마케팅 / 수업 아이디어 / 경쟁 학원 / 교육 정책</h2>
-      <div class="filters">
-        <input type="search" id="q" placeholder="검색 (아이디어/캡션/계정/키워드)">
-        <select id="fTopic"><option value="">주제 전체</option></select>
-        <select id="fSource"><option value="">소스 전체</option><option value="saved">인스타(저장)</option><option value="creator">인스타(크리에이터)</option><option value="discover">인스타(해시태그/검색)</option><option value="threads">Threads</option><option value="youtube">YouTube</option></select>
-        <select id="fVerdict"><option value="">판정 전체</option><option>실용</option><option>흥미</option><option>비현실</option></select>
-        <select id="fTool"><option value="">툴 전체</option></select>
-        <select id="fType"><option value="">유형 전체</option></select>
-        <select id="fStatus"><option value="">상태 전체</option><option>보류</option><option>시도중</option><option>적용완료</option></select>
-        <select id="fPeriod"><option value="">기간 전체</option><option value="7">최근 7일</option><option value="30">최근 30일</option></select>
-        <select id="sort"><option value="apply">실용 점수순</option><option value="score">인기(트렌드)순</option><option value="date">최신순</option></select>
-      </div>
-      <div class="grid" id="feed"></div>
-      <details class="lowzone" id="lowzone"><summary id="lowzoneSummary"></summary><div class="grid" id="feedLow"></div></details>
-    </section>
-  </div>
-  <aside>
-    <section class="panel">
-      <h2>바로 해볼 것 TOP 3</h2>
-      <ul class="top3" id="top3"></ul>
-    </section>
-    <section class="panel">
-      <h2>적용 대기열 (시도중)</h2>
-      <ul class="queue" id="queue"></ul>
-    </section>
-    <section class="panel">
-      <h2>툴별 언급량 (최근 30일)</h2>
-      <div class="bars" id="toolBars"></div>
-    </section>
-    <section class="panel">
-      <h2>적용 완료</h2>
-      <ul class="queue" id="done"></ul>
-    </section>
-  </aside>
-</main>
+<div class="app">
+  <section class="view on" id="v-week">
+    <div class="hello" id="hello">원장님, 좋은 하루예요 :)</div>
+    <div class="big" id="weekHead">이번 주</div>
+    <div class="prog"><b id="progBar" style="width:0"></b></div>
+    <p class="intro" id="weekIntro"></p>
+    <div id="taskList"></div>
+    <div class="upd" id="upd"></div>
+  </section>
+
+  <section class="view" id="v-learn">
+    <div class="big">배우기</div>
+    <div id="summary"></div>
+    <div class="sec">잘 통하는 기법</div>
+    <div id="techList"></div>
+    <div class="sec">하지 말 것</div>
+    <div id="dontList"></div>
+    <div class="sec">참고 글 전체 <span id="postCount" style="font-size:12px;color:var(--muted);font-weight:500"></span></div>
+    <input class="search" id="q" placeholder="검색 (예: 질문, 스크래치, 학부모)">
+    <div class="chips" id="typeChips"></div>
+    <div id="postList"></div>
+  </section>
+
+  <nav class="tabbar">
+    <button class="on" data-v="v-week"><i>📅</i>이번 주</button>
+    <button data-v="v-learn"><i>💡</i>배우기</button>
+  </nav>
+</div>
+
+<div class="sheet" id="sheet"><div class="inner" id="sheetInner"></div></div>
+<div class="actions" id="actions" style="display:none"></div>
+<div class="toast" id="toast"></div>
+
 
 <style>
+  :root { --card:#fff; --line:#ece6dc; --text:#2a2622; --muted:#8a8278; --red:#d9534f; --bg:#fbfaf8; }
+  #gate button.primary { background:#7a4fd6; color:#fff; border:none; border-radius:10px; padding:12px; font-size:15px; font-weight:700; }
+  #gate input[type=password] { background:#faf8f5; color:#2a2622; }
   #gate { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:99; }
   #gate form { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px; width:320px; display:flex; flex-direction:column; gap:12px; }
   #gate h1 { font-size:16px; margin:0; }
   #gate input { background:#141720; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:14px; }
   #gate .err { color:var(--red); font-size:12px; min-height:16px; }
 </style>
-<div id="gate"><form id="gateForm"><h1>코딩 교육 참고 보드</h1><input type="password" id="pw" placeholder="비밀번호" autofocus autocomplete="current-password"><label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="remember" checked> 이 기기에서 기억</label><div class="err" id="gateErr"></div><button class="primary" type="submit">열기</button></form></div>
+<div id="gate"><form id="gateForm"><h1>대시보드 잠금</h1><input type="password" id="pw" placeholder="비밀번호" autofocus autocomplete="current-password"><label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="remember" checked> 이 기기에서 기억</label><div class="err" id="gateErr"></div><button class="primary" type="submit">열기</button></form></div>
 <script>
 (async function(){
   const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
@@ -191,181 +155,147 @@
   form.onsubmit = async ev => { ev.preventDefault(); err.textContent = ''; const ok = await tryUnlock(document.getElementById('pw').value, document.getElementById('remember').checked); if (!ok) err.textContent = '비밀번호가 맞지 않아요'; };
 })();
 </script>
-<script>window.SITE_KEY="edu-board";</script>
 <script>
-window.bootDashboard = function(){
-  const DATA = window.IG_DATA || { posts: [] };
-  const NOTES_KEY = 'edu-board-notes-v1';
-  let notes = {};
-  try { notes = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); } catch(e) { notes = {}; }
-  const saveNotes = () => localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
-  const noteOf = id => notes[id] || { status: '보류', memo: '' };
+window.bootDashboard = function () {
+  const DATA = window.IG_DATA || {};
+  const K = 'edu-board-v2-';
+  const load = (k, d) => { try { return JSON.parse(localStorage.getItem(K + k) || '') ?? d; } catch (e) { return d; } };
+  const save = (k, v) => localStorage.setItem(K + k, JSON.stringify(v));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  const posts = DATA.posts || [];
+  const byId = Object.fromEntries(posts.map(p => [p.id, p]));
+  const pack = (DATA.packs || [])[0];
+  let done = load('done', {}), fills = load('fills', {});
+  const toast = t => { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1600); };
 
-  const posts = (DATA.posts || []).map(p => ({ ...p, _date: p.date ? new Date(p.date) : null, _a: p.analysis || null }));
-  const applyScore = p => p._a ? p._a.score : 0;
-  const verdict = p => p._a ? p._a.verdict : '미분석';
-  const now = new Date();
-  const daysAgo = d => d ? (now - d) / 86400000 : Infinity;
+  // --- fill helpers: {{라벨}} = required, {{선택: 라벨}} = optional
+  const FILL = /\{\{([^}]+)\}\}/g;
+  const slots = body => [...body.matchAll(FILL)].map((m, i) => ({ i, label: m[1].trim(), optional: /^선택\s*[:：]/.test(m[1].trim()) }));
+  const val = (id, i) => ((fills[id] || {})[i] || '').trim();
+  const missing = it => slots(it.body).filter(s => !s.optional && !val(it.id, s.i)).length;
+  const finalText = it => {
+    let i = -1;
+    return it.body.replace(FILL, () => { i++; return val(it.id, i) || '\u0000'; })
+      .split('\n').filter(line => !line.includes('\u0000')).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  };
+  const chipCls = ch => 'c-' + String(ch || '').split(' ')[0];
 
-  document.getElementById('meta').textContent =
-    `인스타 ${posts.filter(p=>!['github','youtube','threads'].includes(p.source)).length}개 · Threads ${posts.filter(p=>p.source==='threads').length}개 · GitHub ${posts.filter(p=>p.source==='github').length}개 · YouTube ${posts.filter(p=>p.source==='youtube').length}개 · 마지막 수집 ${DATA.updatedAt ? new Date(DATA.updatedAt).toLocaleString('ko-KR') : '없음'} · 점수는 Aside가 직접 분석한 실용 점수(10점)`;
-
-  const cnt = v => posts.filter(p => verdict(p) === v).length;
-  document.getElementById('dist').innerHTML = [['실용', 'var(--green)'], ['흥미', 'var(--amber)'], ['비현실', 'var(--red)']].map(([v, c]) =>
-    `<div><div class="n" style="color:${c}">${cnt(v)}</div><div class="l">${v}</div></div>`).join('');
-
-  const uniq = arr => [...new Set(arr)].filter(Boolean).sort();
-  const fTool = document.getElementById('fTool'), fType = document.getElementById('fType'), fTopic = document.getElementById('fTopic');
-  uniq(posts.flatMap(p => p.topics || [])).forEach(t => fTopic.add(new Option(`${t} (${posts.filter(p=>(p.topics||[]).includes(t)).length})`, t)));
-  uniq(posts.flatMap(p => p.tools || [])).forEach(t => fTool.add(new Option(t, t)));
-  uniq(posts.flatMap(p => p.types || [])).forEach(t => fType.add(new Option(t, t)));
-
-  const kwScore = {};
-  posts.filter(p => (daysAgo(p._date) <= 7 || !p._date) && verdict(p) !== '비현실').forEach(p => {
-    [...(p.keywords || []), ...(p.tools || [])].forEach(k => { kwScore[k] = (kwScore[k] || 0) + 1 + applyScore(p) / 10; });
-  });
-  const chipsEl = document.getElementById('trendChips');
-  const topKw = Object.entries(kwScore).sort((a,b) => b[1]-a[1]).slice(0, 15);
-  if (!topKw.length) chipsEl.innerHTML = '<span style="color:var(--muted);font-size:13px">최근 7일 키워드 없음</span>';
-  topKw.forEach(([k, v]) => {
-    const c = document.createElement('span'); c.className = 'chip';
-    c.innerHTML = `${k}<small>${Math.round(v)}</small>`;
-    c.onclick = () => { document.getElementById('q').value = k; render(); };
-    chipsEl.appendChild(c);
-  });
-
-  const toolCount = {};
-  posts.filter(p => daysAgo(p._date) <= 30 || !p._date).forEach(p => (p.tools||[]).forEach(t => toolCount[t] = (toolCount[t]||0)+1));
-  const tc = Object.entries(toolCount).sort((a,b)=>b[1]-a[1]);
-  const maxTc = tc[0]?.[1] || 1;
-  document.getElementById('toolBars').innerHTML = tc.length ? tc.map(([t,n]) =>
-    `<div class="bar"><span>${esc(t)}</span><div class="track"><div class="fill" style="width:${n/maxTc*100}%"></div></div><span>${n}</span></div>`).join('')
-    : '<span style="color:var(--muted);font-size:13px">데이터 없음</span>';
-
-  function renderSide() {
-    const tSel = document.getElementById('fTopic')?.value || '';
-    const top3 = posts.filter(p => p._a && noteOf(p.id).status !== '적용완료' && (!tSel || (p.topics||[]).includes(tSel))).sort((a,b) => applyScore(b)-applyScore(a)).slice(0,3);
-    document.getElementById('top3').innerHTML = top3.length ? top3.map(p =>
-      `<li><div class="t">${esc(p._a.idea)}</div><div class="s"><b>${p._a.score}</b>/10 · ${p.source==='github' ? esc(p.repo||'') : p.source==='youtube' ? '▶ '+esc(p.account||'') : p.source==='threads' ? '스레드 @'+esc(p.account||'') : '@'+esc(p.account||'')} · 첫 단계: ${esc((p._a.guide||[])[0]||'')}</div></li>`).join('')
-      : '<li style="color:var(--muted)">분석된 아이디어 없음</li>';
-    const q = posts.filter(p => noteOf(p.id).status === '시도중');
-    const d = posts.filter(p => noteOf(p.id).status === '적용완료');
-    const li = p => `<li><a href="${p.url}" target="_blank">${p.source==='github' ? esc(p.repo||'') : p.source==='youtube' ? '▶ '+esc(p.account||'') : p.source==='threads' ? '스레드 @'+esc(p.account||'') : '@'+esc(p.account||'')}</a> · ${esc((p._a?.idea||p.summary||'').slice(0,60))}${noteOf(p.id).memo ? `<div style="color:var(--muted);font-size:12px;margin-top:2px">메모: ${esc(noteOf(p.id).memo)}</div>` : ''}</li>`;
-    document.getElementById('queue').innerHTML = q.length ? q.map(li).join('') : '<li style="color:var(--muted)">카드에서 상태를 "시도중"으로 바꾸면 여기 쌓여요</li>';
-    document.getElementById('done').innerHTML = d.length ? d.map(li).join('') : '<li style="color:var(--muted)">아직 없음</li>';
-  }
-
-  function card(p) {
-    const n = noteOf(p.id), a = p._a;
-    return `<div class="card ${a && a.verdict === '비현실' ? 'dim' : ''}" data-id="${p.id}">
-      <div class="top"><span class="acct">${p.source==='github' ? esc(p.repo||p.account) : p.source==='youtube' ? '▶ '+esc(p.account||'') : '@'+esc(p.account||'?')}</span><span>${p.source==='github' ? `GitHub · ${esc(p.lang||'')} · ${p.created ? p.created.slice(0,7)+' 시작' : ''}` : p.source==='youtube' ? `YouTube · ${p._date ? p._date.toLocaleDateString('ko-KR') : ''} · ${p.ytMinutes||'?'}분` : p.source==='threads' ? `Threads · ${p._date ? p._date.toLocaleDateString('ko-KR') : ''}${p.threadParts>1 ? ' · '+p.threadParts+'개 연결' : ''}${p.via ? ' · '+esc(p.via) : ''}` : `${p._date ? p._date.toLocaleDateString('ko-KR') : ''} · 인스타${p.via ? ' · '+esc(p.via) : ''}`}</span></div>
-      ${p.source==='youtube' ? `<div class="summary" style="color:var(--text)">${esc(p.title||'')}</div>` : ''}
-      ${a ? `<div class="scorebox"><span class="bigscore ${a.verdict}">${a.score}</span><span style="color:var(--muted);font-size:12px">/10</span><span class="verdict ${a.verdict}">${a.verdict}</span></div>` : ''}
-      <div class="idea">${esc(a ? a.idea : (p.summary || (p.caption||'').slice(0,120)))}</div>
-      ${a ? `<div class="summary">${esc(p.summary||'')}</div>` : ''}
-      ${a ? `<div class="subscores"><span>실현 <b>${a.feasibility}</b></span><span>효과 <b>${a.impact}</b></span><span>난이도 <b>${a.effort}</b></span><span>과장 <b>${a.hype}</b></span></div>` : ''}
-      ${a ? `<div class="why">${esc(a.why)}</div>` : ''}
-      ${a && a.promo && a.promo.angle && a.promo.angle !== '참고만' ? `<div class="promo"><b>홍보 활용</b> · ${esc(a.promo.angle)}${a.promo.audience && a.promo.audience !== '-' ? ' · 대상: '+esc(a.promo.audience) : ''}${a.promo.hook && !/^\(|^-$/.test(a.promo.hook) ? `<div class="hook">${esc(a.promo.hook)}</div>` : ''}${a.promo.caution && a.promo.caution !== '-' ? `<div>주의: ${esc(a.promo.caution)}</div>` : ''}</div>` : ''}
-      ${a && a.marketing ? `<div class="mkt">${(a.marketing.keypoints||[]).length ? `<b>원문 핵심</b><ul>${a.marketing.keypoints.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>` : ''}<details class="mktd" ${(p.topics||[]).includes('코딩 교육') ? 'open' : ''}><summary>마케팅 기법 분석</summary>${a.marketing.hook ? `<div class="row"><b>첫 줄</b> ${esc(a.marketing.hook)}</div>` : ''}${a.marketing.structure ? `<div class="row"><b>구조</b> ${esc(a.marketing.structure)}</div>` : ''}${a.marketing.cta ? `<div class="row"><b>행동 유도</b> ${esc(a.marketing.cta)}</div>` : ''}${(a.marketing.triggers||[]).length ? `<div class="row trig"><b>반응 요인</b> ${a.marketing.triggers.map(t=>`<span>${esc(t)}</span>`).join('')}</div>` : ''}${a.marketing.engagement ? `<div class="row"><b>반응 해석</b> ${esc(a.marketing.engagement)}</div>` : ''}${a.marketing.why ? `<div class="row"><b>왜 통했나</b> ${esc(a.marketing.why)}</div>` : ''}${a.marketing.borrow ? `<div class="row"><b>가져올 점</b> ${esc(a.marketing.borrow)}</div>` : ''}${a.marketing.risk && a.marketing.risk !== '-' ? `<div class="row"><b>주의</b> ${esc(a.marketing.risk)}</div>` : ''}</details></div>` : ''}
-      ${a && a.essay ? `<div class="essay"><b>에세이 초안 연결</b> · ${esc(a.essay.draft||'')}${a.essay.learn && a.essay.learn !== '-' ? `<div>배울 점: ${esc(a.essay.learn)}</div>` : ''}${a.essay.avoid && a.essay.avoid !== '-' ? `<div>피할 점: ${esc(a.essay.avoid)}</div>` : ''}</div>` : ''}
-      ${a && a.fact ? `<div class="fact">ⓘ ${esc(a.fact)}</div>` : ''}
-      ${a && a.gate ? `<div class="gate">✓ ${esc(a.gate)}</div>` : ''}
-      ${a && (a.guide||[]).length ? `<details class="guide" ${a.verdict==='실용' ? 'open' : ''}><summary>${(p.topics||[]).includes('코딩 교육') ? '우리 학원 적용 방법' : '직접 구현 가이드'} (${a.guide.length}단계)</summary><ol>${a.guide.map(c=>`<li>${esc(c)}</li>`).join('')}</ol></details>` : (p.checklist||[]).length ? `<details class="guide"><summary>체크리스트 (${p.checklist.length})</summary><ol>${p.checklist.map(c=>`<li>${esc(c)}</li>`).join('')}</ol></details>` : ''}
-      <div class="tags">${(p.topics||[]).map(t=>`<span class="tag topic">${esc(t)}</span>`).join('')}${(p.tools||[]).map(t=>`<span class="tag tool">${esc(t)}</span>`).join('')}${(p.types||[]).map(t=>`<span class="tag type">${esc(t)}</span>`).join('')}${(p.keywords||[]).slice(0,4).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-      <div class="stats">${p.source==='github' ? `<span>★ ${fmt(p.ghStars)}</span><span style="color:var(--green)">+${fmt(p.ghDelta)} ${p.ghPeriod==='daily'?'오늘':p.ghPeriod==='monthly'?'이달':'이번 주'}</span>${p.license?`<span>${esc(p.license)}</span>`:''}` : p.source==='youtube' ? `<span>▶ ${fmt(p.ytViews)}회</span>` : p.source==='threads' ? `<span>♥ ${fmt(p.likes)}</span><span>↩ ${fmt(p.comments)}</span><span>⟳ ${fmt(p.thReposts)}</span>` : `<span>♥ ${fmt(p.likes)}</span><span>💬 ${fmt(p.comments)}</span><span>인기 ${fmt(p.score)}</span>`}<a href="${p.url}" target="_blank" style="margin-left:auto;color:var(--accent)">${p.source==='github'?'저장소':p.source==='youtube'?'영상':'원문'}</a></div>
-      <div class="caption">${esc(p.caption||'')}</div>
-      <div class="actions">
-        <span class="status ${n.status}">${n.status}</span>
-        <select class="setStatus"><option ${n.status==='보류'?'selected':''}>보류</option><option ${n.status==='시도중'?'selected':''}>시도중</option><option ${n.status==='적용완료'?'selected':''}>적용완료</option></select>
-        <button class="toggleCap" style="margin-left:auto">캡션</button>
-      </div>
-      <textarea class="memo" placeholder="내 워크플로우에 어떻게 적용할까?">${esc(n.memo)}</textarea>
-    </div>`;
-  }
-
-  function bind(container) {
-    container.querySelectorAll('.card').forEach(c => {
-      const id = c.dataset.id;
-      c.querySelector('.setStatus').onchange = e => { notes[id] = { ...noteOf(id), status: e.target.value }; saveNotes(); render(); renderSide(); };
-      c.querySelector('.memo').onblur = e => { notes[id] = { ...noteOf(id), memo: e.target.value }; saveNotes(); renderSide(); };
-      c.querySelector('.toggleCap').onclick = () => c.classList.toggle('open');
-    });
-  }
-
-  function render() {
-    const q = document.getElementById('q').value.trim().toLowerCase();
-    const fs_ = document.getElementById('fSource').value, ft_ = fTopic.value;
-    const fv = document.getElementById('fVerdict').value, tool = fTool.value, type = fType.value, status = document.getElementById('fStatus').value;
-    const period = document.getElementById('fPeriod').value, sort = document.getElementById('sort').value;
-    let list = posts.filter(p => {
-      if (fv && verdict(p) !== fv) return false;
-      if (fs_ && (p.source||'') !== fs_) return false;
-      if (ft_ && !(p.topics||[]).includes(ft_)) return false;
-      if (tool && !(p.tools||[]).includes(tool)) return false;
-      if (type && !(p.types||[]).includes(type)) return false;
-      if (status && noteOf(p.id).status !== status) return false;
-      if (period && daysAgo(p._date) > +period) return false;
-      if (q) {
-        const hay = [p.caption, p.summary, p.account, p.repo, p.title, ...(p.topics||[]), p._a?.idea, p._a?.why, ...(p.keywords||[]), ...(p.tools||[])].join(' ').toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
-    const cmp = sort === 'date' ? (a,b) => (b._date||0)-(a._date||0) : sort === 'score' ? (a,b) => (b.score||0)-(a.score||0) : (a,b) => applyScore(b)-applyScore(a);
-    list.sort(cmp);
-    const feed = document.getElementById('feed'), low = document.getElementById('feedLow'), lz = document.getElementById('lowzone');
-    if (!posts.length) {
-      feed.innerHTML = `<div class="empty" style="grid-column:1/-1">아직 수집된 게시물이 없어요.<br>인스타에서 게시물을 <code>저장</code>하면 매일 09:00 루틴이 가져와 분석합니다.</div>`;
-      lz.style.display = 'none'; return;
+  // --- week view
+  function renderWeek() {
+    const h = new Date().getHours();
+    document.getElementById('hello').textContent = (h < 12 ? '좋은 아침이에요' : h < 18 ? '좋은 오후예요' : '오늘도 수고 많으셨어요') + ', 원장님 :)';
+    if (!pack) { document.getElementById('taskList').innerHTML = '<div class="empty">이번 주 글이 아직 없어요. 월요일 아침에 올라와요.</div>'; return; }
+    const DAYS = ['월','화','수','목','금','토','일'];
+    const dayRank = w => { const i = DAYS.findIndex(d => (w || '').startsWith(d)); return i < 0 ? 9 : i; };
+    const items = [...(pack.items || [])].sort((a, b) => dayRank(a.when) - dayRank(b.when));
+    const n = items.filter(it => done[it.id]).length;
+    document.getElementById('weekHead').innerHTML = `${esc(pack.title || '이번 주')}<br><span style="font-size:17px;font-weight:700;color:var(--muted)">${items.length}개 중 ${n}개 했어요</span>`;
+    document.getElementById('progBar').style.width = (items.length ? n / items.length * 100 : 0) + '%';
+    document.getElementById('weekIntro').textContent = pack.intro || '';
+    let lastDay = null, html = '';
+    for (const it of items) {
+      const day = (it.when || '').replace(/\(.*\)/, '').trim() || '이번 주';
+      if (day !== lastDay) { html += `<div class="day">${esc(it.when || day)}</div>`; lastDay = day; }
+      const m = missing(it);
+      const meta = done[it.id] ? '올림 완료' : m ? `채울 곳 ${m}개` : (it.channel === '이번 주 할 일' ? '눌러서 보기' : '바로 올릴 수 있어요');
+      html += `<div class="task ${done[it.id] ? 'done' : ''}" data-id="${it.id}"><div class="ck">${done[it.id] ? '✓' : ''}</div><div style="flex:1"><span class="chip ${chipCls(it.channel)}">${esc(it.channel)}</span><div class="tt">${esc(it.title)}</div><div class="tm ${m && !done[it.id] ? 'need' : ''}">${meta}</div></div></div>`;
     }
-    const main = fv ? list : list.filter(p => verdict(p) !== '비현실');
-    const lowList = fv ? [] : list.filter(p => verdict(p) === '비현실');
-    feed.innerHTML = main.length ? main.map(card).join('') : `<div class="empty" style="grid-column:1/-1">필터 조건에 맞는 게시물이 없어요.</div>`;
-    bind(feed);
-    if (lowList.length) { lz.style.display = ''; document.getElementById('lowzoneSummary').textContent = `비현실 / 참고만 (${lowList.length}) 펼치기`; low.innerHTML = lowList.map(card).join(''); bind(low); }
-    else lz.style.display = 'none';
+    document.getElementById('taskList').innerHTML = html;
+    document.querySelectorAll('.task').forEach(el => {
+      el.querySelector('.ck').onclick = e => { e.stopPropagation(); done[el.dataset.id] = !done[el.dataset.id]; save('done', done); renderWeek(); };
+      el.onclick = () => openItem(el.dataset.id);
+    });
+    document.getElementById('upd').textContent = DATA.updatedAt ? '마지막 갱신 ' + new Date(DATA.updatedAt).toLocaleString('ko-KR') : '';
   }
-  const qsTopic = new URLSearchParams(location.search).get('topic');
-  if (qsTopic && [...fTopic.options].some(o => o.value === qsTopic)) fTopic.value = qsTopic;
-  ['q','fTopic','fSource','fVerdict','fTool','fType','fStatus','fPeriod','sort'].forEach(id => document.getElementById(id).addEventListener('input', render));
-  document.getElementById('fTopic').addEventListener('input', renderSide);
-  const DONE_KEY = (window.SITE_KEY || 'ig-dashboard') + '-pack-done';
-  let packDone = {}; try { packDone = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); } catch(e) {}
-  function renderTop() {
-    const pk = (DATA.packs || [])[0];
-    if (pk) {
-      document.getElementById('packPanel').style.display = '';
-      document.getElementById('packTitle').textContent = pk.title || '이번 주 콘텐츠 팩';
-      document.getElementById('packIntro').textContent = pk.intro || '';
-      document.getElementById('pack').innerHTML = (pk.items||[]).map(it => `<div class="pitem ${packDone[it.id] ? 'done' : ''}" data-id="${it.id}"><span class="ch">${esc(it.channel)} · ${esc(it.when||'')}</span><div class="pt">${esc(it.title)}</div>${it.draft && it.draft !== '-' ? `<div class="pw">초안: ${esc(it.draft)}</div>` : ''}<pre>${esc(it.body)}</pre>${it.why ? `<div class="pw">왜 이렇게: ${esc(it.why)}</div>` : ''}<div class="pa"><button class="cp">복사</button><button class="dn">${packDone[it.id] ? '올림 취소' : '올림 완료'}</button></div></div>`).join('');
-      document.querySelectorAll('.pitem').forEach(el => {
-        const it = pk.items.find(x => x.id === el.dataset.id);
-        el.querySelector('.cp').onclick = async () => { try { await navigator.clipboard.writeText(it.body); el.querySelector('.cp').textContent = '복사됨'; } catch(e) { alert('복사가 안 되면 글을 길게 눌러 복사해주세요'); } };
-        el.querySelector('.dn').onclick = () => { packDone[it.id] = !packDone[it.id]; localStorage.setItem(DONE_KEY, JSON.stringify(packDone)); renderTop(); };
-      });
-    }
+
+  function refHtml(id) {
+    const p = byId[id]; if (!p) return '';
+    const m = (p.analysis || {}).marketing || {};
+    const who = p.source === 'youtube' ? '유튜브 ' + (p.account || '') : '@' + (p.account || '');
+    const stat = p.source === 'youtube' ? `조회 ${(p.ytViews || 0).toLocaleString()}` : `좋아요 ${(p.likes || 0).toLocaleString()}${p.comments ? ' · 댓글 ' + p.comments.toLocaleString() : ''}`;
+    return `<div class="ref"><div class="who">${esc(who)} · ${stat}</div>${(m.keypoints || []).length ? `<ul>${m.keypoints.slice(0, 4).map(k => `<li>${esc(k)}</li>`).join('')}</ul>` : ''}${m.hook ? `<div><span class="k">첫 줄</span> ${esc(m.hook)}</div>` : ''}${m.why ? `<div><span class="k">왜 통했나</span> ${esc(m.why)}</div>` : ''}${m.borrow ? `<div><span class="k">가져올 점</span> ${esc(m.borrow)}</div>` : ''}</div>`;
+  }
+
+  // --- item detail
+  function openItem(id) {
+    const it = (pack.items || []).find(x => x.id === id); if (!it) return;
+    const isThread = it.channel === '스레드';
+    const sl = slots(it.body);
+    let i = -1;
+    const bodyHtml = esc(it.body).replace(/\{\{([^}]+)\}\}/g, (m0, lab) => {
+      i++; const s = sl[i]; const v = val(id, s.i);
+      const ph = s.optional ? lab.replace(/^선택\s*[:：]\s*/, '') : lab;
+      return `</div><textarea class="fill ${v ? 'ok' : ''}" data-i="${s.i}" rows="2" placeholder="${ph}">${esc(v)}</textarea>${s.optional ? '<div class="opt">선택 · 비워두면 이 줄은 빠져요</div>' : ''}<div class="draft">`;
+    });
+    document.getElementById('sheetInner').innerHTML = `
+      <button class="back" id="backBtn">‹ 이번 주</button>
+      <div><span class="chip ${chipCls(it.channel)}">${esc(it.channel)} · ${esc(it.when || '')}</span></div>
+      <div class="big" style="font-size:19px;margin-top:8px">${esc(it.title)}</div>
+      ${it.why ? `<div class="tip">💡 ${esc(it.why)}</div>` : ''}
+      <div class="card"><div class="draft">${bodyHtml}</div>${isThread ? '<div class="count" id="cnt"></div>' : ''}</div>
+      ${(it.basis || []).length ? `<details class="refs"><summary>참고한 글 ${it.basis.length}개 보기</summary>${it.basis.map(refHtml).join('')}</details>` : ''}`;
+    const upd = () => {
+      if (isThread) { const n = finalText(it).length; const c = document.getElementById('cnt'); c.textContent = `${n}자 / 500자`; c.classList.toggle('over', n > 500); }
+      const m = missing(it); const cp = document.getElementById('cpBtn'); if (cp) cp.textContent = m ? `채울 곳 ${m}개 남음` : (done[id] ? '다시 복사' : '복사하고 완료');
+    };
+    document.querySelectorAll('#sheetInner .fill').forEach(t => t.oninput = () => { fills[id] = fills[id] || {}; fills[id][t.dataset.i] = t.value; save('fills', fills); t.classList.toggle('ok', !!t.value.trim()); upd(); });
+    document.getElementById('backBtn').onclick = closeItem;
+    const act = document.getElementById('actions');
+    act.innerHTML = `${isThread ? '<button class="btn s" id="openBtn">스레드 열기</button>' : ''}<button class="btn p" id="cpBtn"></button>`;
+    act.style.display = 'flex';
+    document.getElementById('cpBtn').onclick = async () => {
+      const m = missing(it); if (m) { const f = [...document.querySelectorAll('#sheetInner .fill')].find(t => !t.value.trim()); if (f) f.focus(); toast('노란 칸을 먼저 채워주세요'); return; }
+      const text = finalText(it);
+      try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+      done[id] = true; save('done', done); toast('복사했어요. 붙여넣기만 하면 돼요'); upd(); renderWeek();
+    };
+    const ob = document.getElementById('openBtn');
+    if (ob) ob.onclick = () => { if (missing(it)) { toast('노란 칸을 먼저 채워주세요'); return; } window.open('https://www.threads.com/intent/post?text=' + encodeURIComponent(finalText(it)), '_blank'); };
+    upd();
+    document.getElementById('sheet').classList.add('on');
+    document.getElementById('sheet').scrollTop = 0;
+    history.pushState({ sheet: id }, '');
+  }
+  function closeItem() { document.getElementById('sheet').classList.remove('on'); document.getElementById('actions').style.display = 'none'; }
+  window.addEventListener('popstate', closeItem);
+
+  // --- learn view
+  function renderLearn() {
     const rp = DATA.report;
-    if (rp) {
-      document.getElementById('reportPanel').style.display = '';
-      document.getElementById('reportTitle').textContent = rp.title || '트렌드 리포트';
-      document.getElementById('report').innerHTML = (rp.sections||[]).map(s => `<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">${esc(s.h)}</div><ul style="margin:0;padding-left:18px">${(s.items||[]).map(i => `<li>${i}</li>`).join('')}</ul></div>`).join('');
-    }
+    const edu = posts;
+    const top = [...edu].sort((a, b) => (b.likes || 0) - (a.likes || 0))[0];
+    document.getElementById('summary').innerHTML = `
+      <div class="stat"><div><b>${edu.length}</b>모은 글</div><div><b>${top ? (top.likes || 0).toLocaleString() : '-'}</b>최고 좋아요</div><div><b>권위</b>반응 요인 1위</div></div>
+      ${rp ? `<details class="card rep" style="margin-top:10px"><summary style="font-weight:700;cursor:pointer">${esc(rp.title || '이번 주 요약')}</summary>${(rp.sections || []).map(s => `<div style="margin-top:10px"><div style="font-weight:700;font-size:14px">${esc(s.h)}</div><ul style="margin:4px 0 0;padding-left:18px">${(s.items || []).map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}</details>` : ''}`;
+    document.getElementById('techList').innerHTML = (DATA.techniques || []).map(t => `<div class="tech"><h4>${esc(t.name)}</h4><div class="ex">${esc(t.how)} ${esc(t.why)}</div><div class="ours">우리 버전: ${esc(t.ours)}</div>${t.use ? `<div class="use">쓰기 좋은 곳: ${esc(t.use)}</div>` : ''}${(t.refs || []).length ? `<details class="refs"><summary>참고 글 ${t.refs.length}개</summary>${t.refs.map(refHtml).join('')}</details>` : ''}</div>`).join('') || '<div class="empty">아직 정리된 기법이 없어요</div>';
+    document.getElementById('dontList').innerHTML = (DATA.donts || []).map(t => `<div class="tech dont"><h4>${esc(t.name)}</h4><div class="ex">${esc(t.why)}</div>${(t.refs || []).length ? `<details class="refs"><summary>예시 ${t.refs.length}개</summary>${t.refs.map(refHtml).join('')}</details>` : ''}</div>`).join('');
+    const types = [...new Set(edu.flatMap(p => p.types || []))];
+    let fType = '';
+    const chips = document.getElementById('typeChips');
+    chips.innerHTML = ['전체', ...types].map(t => `<button data-t="${t === '전체' ? '' : esc(t)}" class="${t === '전체' ? 'on' : ''}">${esc(t)}</button>`).join('');
+    chips.querySelectorAll('button').forEach(b => b.onclick = () => { fType = b.dataset.t; chips.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); list(); });
+    const list = () => {
+      const q = document.getElementById('q').value.trim().toLowerCase();
+      const arr = edu.filter(p => (!fType || (p.types || []).includes(fType)) && (!q || [p.summary, p.caption, p.title, p.account, JSON.stringify((p.analysis || {}).marketing || {})].join(' ').toLowerCase().includes(q)))
+        .sort((a, b) => (b.likes || 0) + (b.ytViews || 0) / 20 - (a.likes || 0) - (a.ytViews || 0) / 20);
+      document.getElementById('postCount').textContent = `${arr.length}개`;
+      document.getElementById('postList').innerHTML = arr.slice(0, 80).map(p => {
+        const a = p.analysis || {}, m = a.marketing || {};
+        const who = p.source === 'youtube' ? '유튜브 ' + (p.account || '') : (p.source === 'threads' ? '스레드 @' : '인스타 @') + (p.account || '');
+        const stat = p.source === 'youtube' ? `조회 ${(p.ytViews || 0).toLocaleString()}` : `좋아요 ${(p.likes || 0).toLocaleString()}`;
+        return `<div class="post"><div class="h">${esc(a.idea || p.summary || '')}</div><div class="who">${esc(who)} · ${stat}${(p.types || []).length ? ' · ' + esc(p.types.join(', ')) : ''}</div><details><summary>분석 보기</summary><div class="body">${(m.keypoints || []).length ? `<ul>${m.keypoints.map(k => `<li>${esc(k)}</li>`).join('')}</ul>` : ''}${m.hook ? `<div><span class="k">첫 줄</span> ${esc(m.hook)}</div>` : ''}${m.structure ? `<div><span class="k">구조</span> ${esc(m.structure)}</div>` : ''}${m.cta ? `<div><span class="k">행동 유도</span> ${esc(m.cta)}</div>` : ''}${m.why ? `<div><span class="k">왜 통했나</span> ${esc(m.why)}</div>` : ''}${m.borrow ? `<div><span class="k">가져올 점</span> ${esc(m.borrow)}</div>` : ''}${a.promo && a.promo.hook && !/^\(|^-$/.test(a.promo.hook) ? `<div><span class="k">우리 헤드라인</span> ${esc(a.promo.hook)}</div>` : ''}${m.risk && m.risk !== '-' ? `<div><span class="k">주의</span> ${esc(m.risk)}</div>` : ''}${a.fact ? `<div><span class="k">정확한 사실</span> ${esc(a.fact)}</div>` : ''}<div style="margin-top:6px"><a href="${esc(p.url)}" target="_blank" style="color:var(--muted);font-size:12px">원문 열기</a></div></div></details></div>`;
+      }).join('') || '<div class="empty">해당하는 글이 없어요</div>';
+    };
+    document.getElementById('q').oninput = list;
+    list();
   }
-  renderTop();
-  render(); renderSide();
 
-  document.getElementById('exportNotes').onclick = () => {
-    const blob = new Blob([JSON.stringify(notes, null, 2)], { type:'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ig-dashboard-notes.json'; a.click();
-  };
-  document.getElementById('importNotes').onclick = () => document.getElementById('importFile').click();
-  document.getElementById('importFile').onchange = async e => {
-    const f = e.target.files[0]; if (!f) return;
-    try { notes = { ...notes, ...JSON.parse(await f.text()) }; saveNotes(); render(); renderSide(); } catch(err) { alert('JSON 파싱 실패'); }
-  };
-
-  function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function fmt(n) { if (n == null) return '-'; n = +n; return n >= 10000 ? (n/10000).toFixed(1)+'만' : n >= 1000 ? (n/1000).toFixed(1)+'k' : String(Math.round(n)); }
+  document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabbar button').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === b.dataset.v));
+    window.scrollTo(0, 0);
+  });
+  renderWeek(); renderLearn();
 };
 if (window.IG_DATA) window.bootDashboard();
 </script>
