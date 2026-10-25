@@ -38,7 +38,8 @@
   .back { font-size:14px; color:var(--accent); background:none; border:none; padding:6px 0; font-family:inherit; }
   .tip { background:var(--accent-soft); border-radius:12px; padding:10px 12px; font-size:13px; color:#4b2f9e; line-height:1.55; margin:10px 0; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; }
-  .draft { font-size:15px; line-height:1.75; white-space:pre-wrap; word-break:keep-all; }
+  .draft { font-size:15px; line-height:1.75; white-space:pre-wrap; word-break:keep-all; overflow-wrap:anywhere; }
+  .draft a.lnk { display:inline-block; margin:4px 0; padding:8px 14px; background:#7a4fd6; color:#fff; border-radius:10px; text-decoration:none; font-weight:700; }
   .fill { display:block; width:100%; background:#fff7e6; border:1.5px dashed #f0b44c; border-radius:10px; padding:9px 10px; margin:6px 0; font-size:14px; line-height:1.5; color:#5a3b00; font-family:inherit; resize:vertical; min-height:44px; }
   .fill.ok { background:#eef9f0; border:1.5px solid #6cc07f; color:#1f4b2b; }
   .fill::placeholder { color:#b98a3a; }
@@ -222,7 +223,7 @@ window.bootDashboard = function () {
     const isThread = it.channel === '스레드';
     const sl = slots(it.body);
     let i = -1;
-    const bodyHtml = esc(it.body).replace(/\{\{([^}]+)\}\}/g, (m0, lab) => {
+    const bodyHtml = esc(it.body).replace(/https?:\/\/[^\s<]+/g, u => `<a class="lnk" href="${u}" target="_blank" rel="noopener">${u.length > 60 ? '여기를 눌러 열기 (' + u.split('/')[2] + ')' : u}</a>`).replace(/\{\{([^}]+)\}\}/g, (m0, lab) => {
       i++; const s = sl[i]; const v = val(id, s.i);
       const ph = s.optional ? lab.replace(/^선택\s*[:：]\s*/, '') : lab;
       return `</div><textarea class="fill ${v ? 'ok' : ''}" data-i="${s.i}" rows="2" placeholder="${ph}">${esc(v)}</textarea>${s.optional ? '<div class="opt">선택 · 비워두면 이 줄은 빠져요</div>' : ''}<div class="draft">`;
@@ -265,7 +266,7 @@ window.bootDashboard = function () {
     const edu = posts;
     const top = [...edu].sort((a, b) => (b.likes || 0) - (a.likes || 0))[0];
     document.getElementById('summary').innerHTML = `
-      <div class="stat"><div><b>${edu.length}</b>모은 글</div><div><b>${top ? (top.likes || 0).toLocaleString() : '-'}</b>최고 좋아요</div><div><b>권위</b>반응 요인 1위</div></div>
+      <div class="stat"><div><b>${edu.length}</b>모은 글</div><div><b>${top ? (top.likes || 0).toLocaleString() : '-'}</b>최고 좋아요</div><div><b>${esc((DATA.report || {}).topFactor || '권위')}</b>반응 요인 1위</div></div>
       ${rp ? `<details class="card rep" style="margin-top:10px"><summary style="font-weight:700;cursor:pointer">${esc(rp.title || '이번 주 요약')}</summary>${(rp.sections || []).map(s => `<div style="margin-top:10px"><div style="font-weight:700;font-size:14px">${esc(s.h)}</div><ul style="margin:4px 0 0;padding-left:18px">${(s.items || []).map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}</details>` : ''}`;
     document.getElementById('techList').innerHTML = (DATA.techniques || []).map(t => `<div class="tech"><h4>${esc(t.name)}</h4><div class="ex">${esc(t.how)} ${esc(t.why)}</div><div class="ours">우리 버전: ${esc(t.ours)}</div>${t.use ? `<div class="use">쓰기 좋은 곳: ${esc(t.use)}</div>` : ''}${(t.refs || []).length ? `<details class="refs"><summary>참고 글 ${t.refs.length}개</summary>${t.refs.map(refHtml).join('')}</details>` : ''}</div>`).join('') || '<div class="empty">아직 정리된 기법이 없어요</div>';
     document.getElementById('dontList').innerHTML = (DATA.donts || []).map(t => `<div class="tech dont"><h4>${esc(t.name)}</h4><div class="ex">${esc(t.why)}</div>${(t.refs || []).length ? `<details class="refs"><summary>예시 ${t.refs.length}개</summary>${t.refs.map(refHtml).join('')}</details>` : ''}</div>`).join('');
